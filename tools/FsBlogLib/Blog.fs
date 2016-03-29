@@ -109,13 +109,14 @@ module Blog =
     EnsureDirectory(Path.GetDirectoryName(target))
     File.WriteAllText(target, doc.ToString())
 
-  let GeneratePostListing layouts template blogIndex model posts urlFunc needsUpdate infoFunc getPosts =
+  let GeneratePostListing layouts template blogIndex model posts urlFunc needsUpdate titleFunc getPosts =
     for item in posts do
+      let title = titleFunc item
       let model = { model with GenerateAll = true; Posts = Array.ofSeq (getPosts item) }
       let razor = FsBlogLib.Razor(layouts, Model = model)
-      let viewBag = dict []
+      let viewBag = dict [ "Title", box title ]
       let target = urlFunc item
       EnsureDirectory(Path.GetDirectoryName(target))
       if not (File.Exists(target)) || needsUpdate item then
-        printfn "Generating archive: %s" (infoFunc item)
+        printfn "Generating archive: %s" title
         TransformFile template true razor viewBag None blogIndex target

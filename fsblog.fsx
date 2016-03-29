@@ -101,7 +101,7 @@ let buildSite routing updateTagArchive =
         layouts template blogIndex model model.MonthlyPosts
         (fun (y, m, _) -> output ++ "blog" ++ "archive" ++ (m.ToLower() + "-" + (string y)) ++ "index.html")
         (fun (y, m, _) -> y = DateTime.Now.Year && m = uk.DateTimeFormat.GetMonthName(DateTime.Now.Month))
-        (fun (y, m, _) -> sprintf "%d %s" y m)
+        (fun (y, m, _) -> sprintf "Blog posts of %s %d" m y)
         (fun (_, _, p) -> p)
 
     if updateTagArchive then
@@ -109,7 +109,7 @@ let buildSite routing updateTagArchive =
             layouts template blogIndex model model.TaglyPosts
             (fun (_, u, _) -> output ++ "blog" ++ "tag" ++ u ++ "index.html")
             (fun (_, _, _) -> true)
-            (fun (t, _, _) -> t)
+            (fun (t, _, _) -> sprintf "Blog posts with tag %s" t)
             (fun (_, _, p) -> p)
 
     let filesToProcess =

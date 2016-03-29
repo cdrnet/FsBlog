@@ -1,11 +1,15 @@
 @{
     Layout = "default";
-    Title = "FsBlog";
+    DefaultTitle = "Recent Posts";
     Description = "A blog aware static site generator in mostly F#";
 }
 @using System.Linq
 
+<h1>@Title</h1>
+
+<ul>
 @foreach (var post in Enumerable.Take(Model.Posts, 10))
 {
-    <a href="blog/@post.Url/index.html">@post.Title</a>
+    <li><a href="@Model.Root/blog/@post.Url/index.html">@post.Title</a></li>
 }
+</ul>

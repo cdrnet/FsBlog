@@ -2,7 +2,7 @@
     Layout = "post";
     Title = "Getting Started";
     Date = "2013-11-09T12:38:14";
-    Tags = "";
+    Tags = "Help";
     Description = "";
 }
 
@@ -52,9 +52,9 @@ Using your favourite F# code editor, edit the following section of the `./fsblog
     let root = "http://fsprojects.github.io/FsBlog"
     let title = "FsBlog - F# static site generation"
     let description = """
-        FsBlog aims to be a blog-aware static site generator, mostly built in F#. But don't worry, 
-        you won't even need to know any F# to get up and running. So long as you are comfortable 
-        using a command line or terminal, and have a degree of familiarity with Markdown and Razor 
+        FsBlog aims to be a blog-aware static site generator, mostly built in F#. But don't worry,
+        you won't even need to know any F# to get up and running. So long as you are comfortable
+        using a command line or terminal, and have a degree of familiarity with Markdown and Razor
         syntax - you're good to go!"""
 
 There isn't a whole lot to change right now, but at some point you'll be able to configure a Twitter handle, GitHub account etc.
