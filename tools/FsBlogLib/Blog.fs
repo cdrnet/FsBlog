@@ -37,8 +37,7 @@ module Blog =
                 distinct
                 let posts = posts |> Seq.filter (fun p -> p.Tags |> Seq.exists ((=) t))
                 let recent = posts |> Seq.filter (fun p -> p.Date > (DateTime.Now.AddYears(-1))) |> Seq.length
-                where (recent > 0)
-                sortByDescending (recent * (Seq.length posts))
+                sortByDescending (Math.Max(recent,1) * (Seq.length posts))
                 select (t, urlFriendly t, posts) }
         |> Array.ofSeq
       MonthlyPosts =
