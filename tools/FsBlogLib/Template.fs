@@ -83,8 +83,14 @@ type TemplateBaseExtensions<'T>() =
         | _ -> vb.AddValue(key, value)
 
     member x.Title
-        with get() = defaultArg (x.tryGetViewBagValue<string> "Title") ""
+        with get() =
+            match x.tryGetViewBagValue<string> "Title" with
+            | Some title -> title
+            | None -> x.DefaultTitle
         and set value = x.trySetViewBagValue<string> "Title" value
+    member x.DefaultTitle
+        with get() = defaultArg (x.tryGetViewBagValue<string> "DefaultTitle") ""
+        and set value = x.trySetViewBagValue<string> "DefaultTitle" value
     member x.Description
         with get() = defaultArg (x.tryGetViewBagValue<string> "Description") ""
         and set value = x.trySetViewBagValue<string> "Description" value
