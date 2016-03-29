@@ -88,9 +88,10 @@ let buildSite routing updateTagArchive =
         | Preview -> "http://localhost:8080"
 
     let dependencies = [ yield! Directory.GetFiles(layouts) ]
+    let viewBag = dict []
     let noModel = { Root = root; SiteTitle = title; SiteSubtitle = subtitle; MonthlyPosts = [||]; Posts = [||]; TaglyPosts = [||]; GenerateAll = true }
     let razor = new Razor(layouts, Model = noModel)
-    let model =  Blog.LoadModel(tagRenames, Blog.TransformAsTemp (template, source) razor, root, blog, title, subtitle)
+    let model =  Blog.LoadModel(tagRenames, Blog.TransformAsTemp (template, source) razor viewBag, root, blog, title, subtitle)
 
     // Generate RSS feed
     Blog.GenerateRss root title description model rsscount (output ++ "rss.xml")
@@ -121,7 +122,7 @@ let buildSite routing updateTagArchive =
     for current, target in filesToProcess do
         FileHelpers.EnsureDirectory(Path.GetDirectoryName(target))
         printfn "Processing file: %s" (current.Substring(source.Length))
-        Blog.TransformFile template true razor None current target
+        Blog.TransformFile template true razor viewBag None current target
 
     FileHelpers.CopyFiles content output
 

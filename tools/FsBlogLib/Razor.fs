@@ -46,12 +46,12 @@ type Razor(layoutsRoot) =
                 failwithf "Exception compiling markdown fragment: %A" ex.Message
 *)
     member val Model = obj() with get, set
-    member val ViewBag = new DynamicViewBag() with get,set
 
-    member x.ProcessFile(source) =
+    member x.ProcessFile(source, viewBag) =
       try
-        x.ViewBag <- new DynamicViewBag()
-        let html = Razor.Parse(File.ReadAllText(source), x.Model, x.ViewBag, null)
+        let bag = DynamicViewBag()
+        bag.AddDictionary(viewBag)
+        let html = Razor.Parse(File.ReadAllText(source), x.Model, bag, null)
         html
       with e ->
         printfn "Something went wrong: %A" e

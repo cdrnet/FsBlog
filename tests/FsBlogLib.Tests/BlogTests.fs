@@ -55,6 +55,6 @@ let ``Transform post`` (post, expected: string) =
     let noModel = { Root = root; MonthlyPosts = [||]; Posts = [||]; TaglyPosts = [||]; GenerateAll = true ; SiteTitle = "Test blog"; SiteSubtitle = "Subtitle." }
     let razor = new Razor(layouts, Model = noModel)
     use tempTarget = DisposableFile.CreateTemp()
-    Blog.TransformFile template false razor None tempSource.FileName tempTarget.FileName
+    Blog.TransformFile template false razor (dict []) None tempSource.FileName tempTarget.FileName
     let targetText = File.ReadAllText(tempTarget.FileName)
     Assert.AreEqual(expected, targetText)

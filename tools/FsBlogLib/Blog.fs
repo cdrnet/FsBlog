@@ -52,7 +52,7 @@ module Blog =
       SiteTitle = title
       SiteSubtitle = subtitle }
 
-  let TransformFile template hasHeader (razor:FsBlogLib.Razor) prefix current target =
+  let TransformFile template hasHeader (razor:FsBlogLib.Razor) viewBag prefix current target =
     let html =
       match Path.GetExtension(current).ToLower() with
       | (".fsx" | ".md") as ext ->
@@ -70,13 +70,13 @@ module Blog =
           let processed = File.ReadAllText(html.FileName)
           File.WriteAllText(html.FileName, header + processed)
           EnsureDirectory(Path.GetDirectoryName(target))
-          razor.ProcessFile(html.FileName)
+          razor.ProcessFile(html.FileName, viewBag)
       | ".html" | ".cshtml" ->
-          razor.ProcessFile(current)
+          razor.ProcessFile(current, viewBag)
       | _ -> failwith "Not supported file!"
     File.WriteAllText(target, html)
 
-  let TransformAsTemp (template, source:string) razor prefix current =
+  let TransformAsTemp (template, source:string) razor viewBag prefix current =
     let cached = (Path.GetDirectoryName(current) ++ "cached" ++ Path.GetFileName(current))
     if File.Exists(cached) &&
       (File.GetLastWriteTime(cached) > File.GetLastWriteTime(current)) then
@@ -84,7 +84,7 @@ module Blog =
     else
       printfn "Processing abstract: %s" (current.Substring(source.Length + 1))
       EnsureDirectory(Path.GetDirectoryName(current) ++ "cached")
-      TransformFile template false razor (Some prefix) current cached
+      TransformFile template false razor viewBag (Some prefix) current cached
       File.ReadAllText(cached)
 
   let GenerateRss root title description model take target =
@@ -114,8 +114,9 @@ module Blog =
     for item in posts do
       let model = { model with GenerateAll = true; Posts = Array.ofSeq (getPosts item) }
       let razor = FsBlogLib.Razor(layouts, Model = model)
+      let viewBag = dict []
       let target = urlFunc item
       EnsureDirectory(Path.GetDirectoryName(target))
       if not (File.Exists(target)) || needsUpdate item then
         printfn "Generating archive: %s" (infoFunc item)
-        TransformFile template true razor None blogIndex target
+        TransformFile template true razor viewBag None blogIndex target
